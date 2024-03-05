@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Timestamp } from "mongodb";
 
 const BlogSchema = new mongoose.Schema({
     poster: {type: String, required:true},
@@ -7,19 +8,16 @@ const BlogSchema = new mongoose.Schema({
     category: {type: String, required:true},
     content: {type: String, required:true},
     timeToRead: {type: String},
-    date: {type: String},
-    time: {type: String},
-    editor:{type: Array},
-    views:{type: Array},
-    likes:{type: Array},
-    comments:{type: Array}
-})
+}, 
+{
+    timestamps:true
+}) 
 
 export const BlogModel = mongoose.model('Blog', BlogSchema)
-
+ 
 export const getBlog = () => BlogModel.find();
 
-export const getBlogByTitle = (title:string) => BlogModel.findOne({titlel:title});
+export const getBlogByTitle = (title:string) => BlogModel.findOne({title:title});
 
 export const getBlogById = (id:string) => BlogModel.findById(id);
 

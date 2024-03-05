@@ -49,6 +49,17 @@ export const deleteTodo = async (req:express.Request, res:express.Response)=>{
     }
 }
 
+export const getOneTodoById = async (req:express.Request, res:express.Response)=>{
+    try{
+        const {id} = req.params;
+        const Todo =await getTodoById(id);
+        return res.status(200).send({message:"Todo retrieved successfully",data:Todo})
+    } 
+    catch(error){
+        console.log(error)
+        return res.status(400).send({message:"Error Occured"});
+    }
+}
 
 export const updateTodo = async (req:express.Request, res:express.Response)=>{
     try{

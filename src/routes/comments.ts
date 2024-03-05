@@ -1,15 +1,18 @@
 import express from 'express'
-
-import { getAllMessages, addMessage, deleteMessage, updateMessage, getOneMessageById } from '../controllers/messages'
+import { isAuthenticated, isLoggedIn } from '../middlewares'
+import {getCommentsByBlogId,getCommentsByUserId, getAllComments, addComment, deleteComment, updateComment, getOneCommentById } from '../controllers/comments'
+import { extractToken } from '../middlewares/jwt_config'
 
 export default(router: express.Router)=>{
-    router.post('/messages/add', addMessage)
-    router.get('/messages', getAllMessages)
-    router.get('/messages/:id',getOneMessageById )  
-    router.delete('/messages/delete/:id',deleteMessage )
-    router.patch('/messages/update/:id',updateMessage )
+    router.post('/comments/add',extractToken, isLoggedIn, addComment)
+    router.get('/comments',extractToken,  getAllComments)
+    router.get('/comments/:id',extractToken, getOneCommentById )  
+    router.get('/comments/users/:id', extractToken, getCommentsByUserId )  
+    router.get('/comments/blogs/:id', extractToken, getCommentsByBlogId )  
+    router.delete('/comments/delete/:id', extractToken, deleteComment )
+    router.patch('/comments/update/:id', extractToken, updateComment )
 }
-  
+   
 // schema
 
 
@@ -22,36 +25,32 @@ export default(router: express.Router)=>{
  *         scheme: bearer
  *         bearerFormat: JWT
  *   schemas:
- *      Message:
+ *      Comment:
  *          type: object
  *          properties:
  *              id:
  *                  type: string
  *                  description: Id provided by db
- *              name:
+ *              blogId:
  *                  type: string
- *                  description: Id of Message
- *              phone:
+ *                  description: Id of blog
+ *              usedId:
  *                 type: string
  *                 description: Id of user
- *              email:
+ *              content:
  *                 type: string
  *                 description: Id of user
- *              message:
- *                  type: string
- *                  description: Time created
  *              createdAt:
  *                  type: string
- *                  description: Time updated
+ *                  description: Time created
  *              updatedAt:
  *                  type: string
  *                  description: Time updated
  *          example:
  *             id: 65e070808c4b09bb1f9b3ea 
- *             name: "Muheto Enock"
- *             email: "enockmuheto@gmail.com"
- *             phone: "0788888888"
- *             message: "Prompt engineering has emerged as one of the most impactful innovations."
+ *             blogId: "65e05476cf3ae7f4a1d49549"
+ *             userId: "65e05476cf3ae7f4a1d49549"
+ *             content: "Prompt engineering has emerged as one of the most impactful innovations."
  *             createdAt: "2024-03-04T12:05:17.227Z"
  *             updatedAt: "2024-03-04T12:05:17.227Z"
  *
@@ -60,12 +59,13 @@ export default(router: express.Router)=>{
 
 
 
+
 /**
  * @swagger
- * '/messages/add':
+ * '/comments/add':
  *  post:
- *    summary: -Add a Message
- *    tags: [Message]
+ *    summary: -Add a Comment
+ *    tags: [Comment]
  *    requestBody:
  *      required: true
  *      content:
@@ -89,7 +89,7 @@ export default(router: express.Router)=>{
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#components/schemas/Message'
+ *              $ref: '#components/schemas/Comment'
  *      500:
  *        description: internal server error
  *      
@@ -98,10 +98,10 @@ export default(router: express.Router)=>{
   /**
    *
    * @swagger
-   * '/messages':
+   * '/comments':
    *   get:
-   *     summary: Get All Message
-   *     tags: [Message]
+   *     summary: Get All Comment
+   *     tags: [Comment]
    *     security:
    *      -bearerAuth: []
    *     responses:
@@ -112,30 +112,30 @@ export default(router: express.Router)=>{
    *             schema:
    *               type: array
    *               items:
-   *                 $ref: '#components/schemas/Message'
+   *                 $ref: '#components/schemas/Comment'
    *       400:
    *         description: Internal server error
    *         content:
    *           application/json:
    *             example:
-   *               message: Internal server error
+   *               Comment: Internal server error
    *               error: Details about the error
    */
 
  
 /** 
  * @swagger 
- * /messages/{id}:
+ * /comments/users/{id}:
  *   get:
- *     summary: Get one Message
- *     tags: [Message]
+ *     summary: Get comments by user Id / All comments made by user
+ *     tags: [Comment]
  *     parameters:
  *      -   in: path
  *          name: id
  *          required: true
  *          schema:
  *              type: string
- *          description: The id of the Message
+ *          description: The id of the user
  *     responses:
  *       200:
  *         description: Successful response
@@ -144,13 +144,46 @@ export default(router: express.Router)=>{
  *             schema:
  *               type: object
  *               items:
- *                 $ref: '#components/schemas/Message'
+ *                 $ref: '#components/schemas/Comment'
  *       400:
  *         description: Internal server error
  *         content:
  *           application/json:
  *             example:
- *               message: Internal server error
+ *               Comment: Internal server error
+ *               error: Details about the error
+ */
+
+  
+ 
+/** 
+ * @swagger 
+ * /comments/blogs/{id}:
+ *   get:
+ *     summary: Get comments by Blog Id / All comments made on a blog
+ *     tags: [Comment]
+ *     parameters:
+ *      -   in: path
+ *          name: id
+ *          required: true
+ *          schema:
+ *              type: string
+ *          description: The id of the blog
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *                 $ref: '#components/schemas/Comment'
+ *       400:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             example:
+ *               Comment: Internal server error
  *               error: Details about the error
  */
 
@@ -158,17 +191,17 @@ export default(router: express.Router)=>{
 
 /** 
  * @swagger 
- * /messages/delete/{id}:
+ * /comments/delete/{id}:
  *   delete:
- *     summary: Delete a Message
- *     tags: [Message]
+ *     summary: Delete a Comment
+ *     tags: [Comment]
  *     parameters:
  *      -   in: path
  *          name: id
  *          required: true
  *          schema:
  *              type: string
- *          description: The id of the Message to be deleted
+ *          description: The id of the Comment to be deleted
  *     responses:
  *       200:
  *         description: Successful response
@@ -177,30 +210,30 @@ export default(router: express.Router)=>{
  *             schema:
  *               type: object
  *               items:
- *                 $ref: '#/components/schemas/Message'
+ *                 $ref: '#/components/schemas/Comment'
  *       400:
  *         description: Internal server error
  *         content:
  *           application/json:
  *             example:
- *               message: Internal server error
+ *               Comment: Internal server error
  *               error: Details about the error
  */
 
 
 /** 
  * @swagger 
- * /messages/update/{id}:
+ * /comments/update/{id}:
  *   patch:
- *     summary: update a Message
- *     tags: [Message]
+ *     summary: update a Comment
+ *     tags: [Comment]
  *     parameters:
  *      -   in: path
  *          name: id
  *          required: true
  *          schema:
  *              type: string
- *          description: The id of the Message to be updated
+ *          description: The id of the Comment to be updated
  *     requestBody:
  *      required: true
  *      content:
@@ -221,12 +254,12 @@ export default(router: express.Router)=>{
  *             schema:
  *               type: object
  *               items:
- *                 $ref: '#/components/schemas/Message'
+ *                 $ref: '#/components/schemas/Comment'
  *       400:
  *         description: Internal server error
  *         content:
  *           application/json:
  *             example:
- *               message: Internal server error
+ *               Comment: Internal server error
  *               error: Details about the error
  */

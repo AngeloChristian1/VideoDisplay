@@ -1,17 +1,18 @@
 import express from 'express'
 
-import { getAllMessages, addMessage, deleteMessage, updateMessage, getOneMessageById } from '../controllers/messages'
+import {getLikesByBlogId,getLikesByUserId, getAllLikes, addLike, deleteLike, updateLike, getOneLikeById } from '../controllers/likes'
 
 export default(router: express.Router)=>{
-    router.post('/messages/add', addMessage)
-    router.get('/messages', getAllMessages)
-    router.get('/messages/:id',getOneMessageById )  
-    router.delete('/messages/delete/:id',deleteMessage )
-    router.patch('/messages/update/:id',updateMessage )
+    router.post('/likes/add', addLike)
+    router.get('/likes', getAllLikes)
+    router.get('/likes/:id',getOneLikeById )  
+    router.get('/likes/users/:id',getLikesByUserId )  
+    router.get('/likes/blogs/:id',getLikesByBlogId )  
+    router.delete('/likes/delete/:id',deleteLike )
+    router.patch('/likes/update/:id',updateLike )
 }
   
 // schema
-
 
 /**
  * @swagger
@@ -22,50 +23,44 @@ export default(router: express.Router)=>{
  *         scheme: bearer
  *         bearerFormat: JWT
  *   schemas:
- *      Message:
+ *      Like:
  *          type: object
  *          properties:
  *              id:
  *                  type: string
  *                  description: Id provided by db
- *              name:
+ *              blogId:
  *                  type: string
- *                  description: Id of Message
- *              phone:
+ *                  description: Id of blog
+ *              usedId:
  *                 type: string
  *                 description: Id of user
- *              email:
- *                 type: string
+ *              isLiked:
+ *                 type: boolean
  *                 description: Id of user
- *              message:
- *                  type: string
- *                  description: Time created
  *              createdAt:
  *                  type: string
- *                  description: Time updated
+ *                  description: Time created
  *              updatedAt:
  *                  type: string
  *                  description: Time updated
  *          example:
  *             id: 65e070808c4b09bb1f9b3ea 
- *             name: "Muheto Enock"
- *             email: "enockmuheto@gmail.com"
- *             phone: "0788888888"
- *             message: "Prompt engineering has emerged as one of the most impactful innovations."
+ *             blogId: "65e05476cf3ae7f4a1d49549"
+ *             isLiked: true
+ *             userId: "65e05476cf3ae7f4a1d49549"
  *             createdAt: "2024-03-04T12:05:17.227Z"
  *             updatedAt: "2024-03-04T12:05:17.227Z"
  *
  */
 
 
-
-
 /**
  * @swagger
- * '/messages/add':
+ * '/likes/add':
  *  post:
- *    summary: -Add a Message
- *    tags: [Message]
+ *    summary: -Add a Like
+ *    tags: [Like]
  *    requestBody:
  *      required: true
  *      content:
@@ -73,23 +68,19 @@ export default(router: express.Router)=>{
  *          schema:
  *            type: object
  *            properties:
- *              title:
+ *              userId:
  *                type: string
- *              subtitle:
+ *              blogId:
  *                type: string
- *              category:
- *                type: string
- *              timeToRead:
- *                type: string
- *              content:
- *                type: string
+ *              isLiked:
+ *                type: boolean
  *    responses:
  *      200:
  *        description: You have successfully logged in
  *        content:
  *          application/json:
  *            schema:
- *              $ref: '#components/schemas/Message'
+ *              $ref: '#components/schemas/Like'
  *      500:
  *        description: internal server error
  *      
@@ -98,10 +89,10 @@ export default(router: express.Router)=>{
   /**
    *
    * @swagger
-   * '/messages':
+   * '/likes':
    *   get:
-   *     summary: Get All Message
-   *     tags: [Message]
+   *     summary: Get All Like
+   *     tags: [Like]
    *     security:
    *      -bearerAuth: []
    *     responses:
@@ -112,30 +103,30 @@ export default(router: express.Router)=>{
    *             schema:
    *               type: array
    *               items:
-   *                 $ref: '#components/schemas/Message'
+   *                 $ref: '#components/schemas/Like'
    *       400:
    *         description: Internal server error
    *         content:
    *           application/json:
    *             example:
-   *               message: Internal server error
+   *               Like: Internal server error
    *               error: Details about the error
    */
 
  
 /** 
  * @swagger 
- * /messages/{id}:
+ * /likes/users/{id}:
  *   get:
- *     summary: Get one Message
- *     tags: [Message]
+ *     summary: Get Likes by user Id / All likes made by user
+ *     tags: [Like]
  *     parameters:
  *      -   in: path
  *          name: id
  *          required: true
  *          schema:
  *              type: string
- *          description: The id of the Message
+ *          description: The id of the user
  *     responses:
  *       200:
  *         description: Successful response
@@ -144,13 +135,46 @@ export default(router: express.Router)=>{
  *             schema:
  *               type: object
  *               items:
- *                 $ref: '#components/schemas/Message'
+ *                 $ref: '#components/schemas/Like'
  *       400:
  *         description: Internal server error
  *         content:
  *           application/json:
  *             example:
- *               message: Internal server error
+ *               Like: Internal server error
+ *               error: Details about the error
+ */
+
+  
+ 
+/** 
+ * @swagger 
+ * /likes/blogs/{id}:
+ *   get:
+ *     summary: Get Likes by Blog Id / All likes made on a blog
+ *     tags: [Like]
+ *     parameters:
+ *      -   in: path
+ *          name: id
+ *          required: true
+ *          schema:
+ *              type: string
+ *          description: The id of the blog
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *                 $ref: '#components/schemas/Like'
+ *       400:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             example:
+ *               Like: Internal server error
  *               error: Details about the error
  */
 
@@ -158,17 +182,17 @@ export default(router: express.Router)=>{
 
 /** 
  * @swagger 
- * /messages/delete/{id}:
+ * /likes/delete/{id}:
  *   delete:
- *     summary: Delete a Message
- *     tags: [Message]
+ *     summary: Delete a Like
+ *     tags: [Like]
  *     parameters:
  *      -   in: path
  *          name: id
  *          required: true
  *          schema:
  *              type: string
- *          description: The id of the Message to be deleted
+ *          description: The id of the Like to be deleted
  *     responses:
  *       200:
  *         description: Successful response
@@ -177,30 +201,30 @@ export default(router: express.Router)=>{
  *             schema:
  *               type: object
  *               items:
- *                 $ref: '#/components/schemas/Message'
+ *                 $ref: '#/components/schemas/Like'
  *       400:
  *         description: Internal server error
  *         content:
  *           application/json:
  *             example:
- *               message: Internal server error
+ *               Like: Internal server error
  *               error: Details about the error
  */
 
 
 /** 
  * @swagger 
- * /messages/update/{id}:
+ * /likes/update/{id}:
  *   patch:
- *     summary: update a Message
- *     tags: [Message]
+ *     summary: update a Like
+ *     tags: [Like]
  *     parameters:
  *      -   in: path
  *          name: id
  *          required: true
  *          schema:
  *              type: string
- *          description: The id of the Message to be updated
+ *          description: The id of the Like to be updated
  *     requestBody:
  *      required: true
  *      content:
@@ -221,12 +245,12 @@ export default(router: express.Router)=>{
  *             schema:
  *               type: object
  *               items:
- *                 $ref: '#/components/schemas/Message'
+ *                 $ref: '#/components/schemas/Like'
  *       400:
  *         description: Internal server error
  *         content:
  *           application/json:
  *             example:
- *               message: Internal server error
+ *               Like: Internal server error
  *               error: Details about the error
  */

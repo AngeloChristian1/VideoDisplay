@@ -9,18 +9,20 @@ const UserSchema = new mongoose.Schema({
         salt:{type: String, select:false},
         sessionToken:{type: String, select:false},  
     },
-    role: {type: String},
+    role: {type: String, required:true},
 })
 
 export const UserModel = mongoose.model('User', UserSchema)
 
 export const getUsers = () => UserModel.find();
 export const getUserByEmail = (email:string) => UserModel.findOne({email:email});
-export const getUserBySessionToken = (sessionToken:string) => UserModel.findOne({
+export const getUserBySessionToken = (sessionToken:string|any) => UserModel.findOne({
     'authentication.sessionToken': sessionToken
 })
  
 export const getUserById = (id:string) => UserModel.findById(id);
+
+export const getUserByRole = (role:string) => UserModel.findById(role);
 export const createUser = (values:Record<string, any>) => new UserModel(values).save()
 .then((user)=>user.toObject());
 

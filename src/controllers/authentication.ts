@@ -108,7 +108,7 @@ export const changeUserPassword = async (req:express.Request, res:express.Respon
         const {id} = req.params;
         const {oldPassword, newPassword} = req.body;
         const userInfo = JSON.stringify(req.userInfo)
-        console.log("decoded from passord change",userInfo);
+        // console.log("decoded from password change",userInfo);
         if(!oldPassword || !newPassword){
             return res.status(400).json({message:"Fill in all fields"})
         }

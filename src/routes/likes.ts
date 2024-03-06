@@ -74,6 +74,8 @@ export default(router: express.Router)=>{
  *                type: string
  *              isLiked:
  *                type: boolean
+ *    security:
+ *       - bearerAuth: []
  *    responses:
  *      200:
  *        description: You have successfully logged in
@@ -94,7 +96,7 @@ export default(router: express.Router)=>{
    *     summary: Get All Like
    *     tags: [Like]
    *     security:
-   *      -bearerAuth: []
+   *       - bearerAuth: []
    *     responses:
    *       200:
    *         description: Successful response
@@ -127,6 +129,8 @@ export default(router: express.Router)=>{
  *          schema:
  *              type: string
  *          description: The id of the user
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successful response
@@ -160,6 +164,8 @@ export default(router: express.Router)=>{
  *          schema:
  *              type: string
  *          description: The id of the blog
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successful response
@@ -193,6 +199,8 @@ export default(router: express.Router)=>{
  *          schema:
  *              type: string
  *          description: The id of the Like to be deleted
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successful response
@@ -225,6 +233,8 @@ export default(router: express.Router)=>{
  *          schema:
  *              type: string
  *          description: The id of the Like to be updated
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *      required: true
  *      content:

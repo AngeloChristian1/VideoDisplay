@@ -23,13 +23,15 @@ interface MulterRequest extends Request {
   }
 
 
-export const uploadImageToCloudinary = async (req: Request, res: Response, next: NextFunction) => {
+export const uploadBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body
+    // console.log("files",req.files)
     let { title,subtitle, category, content, timeToRead} = req.body;
     if(!title || !content || !subtitle || !category || !content){
         return res.status(400).send({message:"Please fill in all fields"});
     }
+    
     const result = await blogSchema.validateAsync(req.body)
     console.log("result", result);
     title  = result.title
@@ -37,17 +39,18 @@ export const uploadImageToCloudinary = async (req: Request, res: Response, next:
     subtitle = result.subtitle
     category = result.category
     timeToRead = result.timeToRead
-
     const existingBlog = await getBlogByTitle(title)
 
     if(existingBlog){
         return res.status(400).send({message: "Blog with that title already exists"});
     }
+    
     const files: CloudinaryFile[] = req.files as CloudinaryFile[];
     if (!files || files.length == 0 || files==null) {
       return res.status(400).send({message: "Please provide Image"});
     }
     const cloudinaryUrls: string[] = [];
+
     for (const file of files) {
       const resizedBuffer: Buffer = await sharp(file.buffer)
         .resize({ width: 1000, height: 800 })
@@ -76,8 +79,7 @@ export const uploadImageToCloudinary = async (req: Request, res: Response, next:
                 return res.status(200).send({status:"Blog Added successfully", data:result})
             })      
 
-            // return res.status(200).send({files: cloudinaryUrls, body: body})
-            
+            // return res.status(200).send({files: cloudinaryUrls, body: body})  
           }
         }
       );
@@ -186,15 +188,16 @@ export const addBlog = async (req: MulterRequest, res: express.Response) =>{
     }
 }
 
-
+ 
 export const getAllBlogs = async (req:express.Request, res:express.Response)=>{
     try{
+      // console.log('getAllBlogs', req)
         const Blogs =await getBlog();
         return res.status(200).json(Blogs)
     } 
-    catch(error){
+    catch(error){ 
         console.log(error)
-        return res.sendStatus(400)
+        return res.status(400).send({message:"error getting all blogs"})
     }
 }
 
@@ -251,8 +254,6 @@ export const updateBlog = async (req:express.Request, res:express.Response)=>{
             return res.status(404).send({message:"Blog not found"});
         }
 
-        myBlog = Blog
-
         Blog.poster = poster;
         Blog.title = title;
         Blog.category = category;
@@ -270,12 +271,84 @@ export const updateBlog = async (req:express.Request, res:express.Response)=>{
         return res.status(400).send({message:"Blog update failed", bloggg:myBlog})
     }
 }
- 
 
-let image = "../assets/images/robot.jpg"
 
-const  runCloudinary = () =>{
-    cloudinary.uploader.upload(image).then(result=>{
-console.log("cloudinary results",result)
-}) 
-}
+
+export const editBlog = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const body = req.body
+    const {id}= req.params
+    // console.log("files",req.files)
+    let { title,subtitle, category, content, timeToRead} = req.body;
+    if(!title && !content && !subtitle && !category && !content){
+        return res.status(400).send({message:"Please fill in all fields"});
+    }
+
+    const existingBlog = await getBlogById(id)
+
+    if(!existingBlog){
+        return res.status(404).send({message: "Blog not found"});
+    }
+    
+    if(req.files){
+          const files: CloudinaryFile[] = req.files as CloudinaryFile[];
+    if (!files || files.length == 0 || files==null) {
+      return res.status(400).send({message: "Please provide Image"});
+    }
+
+    const cloudinaryUrls: string[] = [];
+
+    for (const file of files) {
+      const resizedBuffer: Buffer = await sharp(file.buffer)
+        .resize({ width: 1000, height: 800 })
+        .toBuffer();
+
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          resource_type: 'auto',
+          folder: 'my-blog',
+        } as any,
+        (err: UploadApiErrorResponse | undefined, result: UploadApiResponse | undefined) => {
+          if (err) {
+            console.error('Cloudinary upload error:', err);
+            return res.send({error:err})
+          }
+          if (!result) {
+            console.error('Cloudinary upload error: Result is undefined');
+            return res.send(new Error('Cloudinary upload result is undefined'));
+          }
+          cloudinaryUrls.push(result.secure_url);
+
+          if (cloudinaryUrls.length === files.length) {
+            //All files processed now get your images here
+            req.body.poster = cloudinaryUrls[0] || null;
+            
+            existingBlog.poster= cloudinaryUrls[0] || existingBlog.poster,
+            existingBlog.title =  title || existingBlog.title,
+            existingBlog.subtitle= subtitle || existingBlog.subtitle,
+            existingBlog.category =  category || existingBlog.category,
+            existingBlog.content = content || existingBlog.content,
+            existingBlog.timeToRead= timeToRead || existingBlog.timeToRead
+            
+
+            const updatedBlog = existingBlog.save()
+            // const Blog:any =  createBlog({title,subtitle, category, content, timeToRead, poster:cloudinaryUrls[0]}).then(result => {
+            //     return res.status(200).send({status:"Blog Added successfully", data:result})
+            // })      
+
+            return res.status(200).send({message:"Blog updated", updatedBlog: existingBlog})  
+          }
+        }
+      );
+      uploadStream.end(resizedBuffer);
+    }
+    }
+
+    
+
+
+  } catch (error) {
+    console.error('Error in uploadToCloudinary middleware:', error);
+    next(error);
+  }
+};

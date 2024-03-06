@@ -11,15 +11,15 @@ const CLOUDINARY_URL= `cloudinary: //512215468442747:INCKgKkNjgzxbP6ggLed5XbcWxU
     api_secret: CLOUDINARY_SECRET
 }) 
 export {cloudinary} 
-
+ 
 export const uploadToCloudinary = (fileBuffer:Buffer) => {
     return new Promise((resolve, reject) => {
-        cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(result.secure_url);
-            }
-        }).end(fileBuffer);
+        // cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+        //     if (error) {
+        //         reject(error);
+        //     } else {
+        //         resolve(result.secure_url);
+        //     }
+        // }).end(fileBuffer);
     });
   };

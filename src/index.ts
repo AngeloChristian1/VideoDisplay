@@ -36,6 +36,16 @@ const options = {
       title: "My Blog Swagger API",
       version:'1.0.0',
       description: "Swagger Documentation"
+      
+    },
+    components:{
+      securitySchemes:{
+        bearerAuth:{
+          type:true,
+          scheme:'bearer',
+          bearerFormat:"JWT"
+        }
+      }
     },
     servers: [
       {
@@ -50,7 +60,8 @@ const options = {
     ],
 
   },
-  apis:[`${__dirname}/routes/*ts`, __filename,'backend-my-brand/src/routes/blogs.ts', "backend-my-brand/src/routes/*.ts"]
+  apis:[`${__dirname}/routes/*ts`, __filename,'backend-my-brand/src/routes/blogs.ts', "backend-my-brand/src/routes/*.ts"],
+  
 };
 
 const specs = swaggerJSDoc(options)

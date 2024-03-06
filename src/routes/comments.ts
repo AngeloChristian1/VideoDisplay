@@ -5,10 +5,10 @@ import { extractToken } from '../middlewares/jwt_config'
 
 export default(router: express.Router)=>{
     router.post('/comments/add',extractToken, isLoggedIn, addComment)
-    router.get('/comments',extractToken,  getAllComments)
-    router.get('/comments/:id',extractToken, getOneCommentById )  
-    router.get('/comments/users/:id', extractToken, getCommentsByUserId )  
-    router.get('/comments/blogs/:id', extractToken, getCommentsByBlogId )  
+    router.get('/comments',  getAllComments)
+    router.get('/comments/:id', getOneCommentById )  
+    router.get('/comments/users/:id', getCommentsByUserId )  
+    router.get('/comments/blogs/:id', getCommentsByBlogId )  
     router.delete('/comments/delete/:id', extractToken, deleteComment )
     router.patch('/comments/update/:id', extractToken, updateComment )
 }
@@ -83,6 +83,8 @@ export default(router: express.Router)=>{
  *                type: string
  *              content:
  *                type: string
+ *    security:
+ *       - bearerAuth: []
  *    responses:
  *      200:
  *        description: You have successfully logged in
@@ -103,7 +105,7 @@ export default(router: express.Router)=>{
    *     summary: Get All Comment
    *     tags: [Comment]
    *     security:
-   *      -bearerAuth: []
+   *       - bearerAuth: []
    *     responses:
    *       200:
    *         description: Successful response
@@ -136,6 +138,8 @@ export default(router: express.Router)=>{
  *          schema:
  *              type: string
  *          description: The id of the user
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successful response
@@ -169,6 +173,8 @@ export default(router: express.Router)=>{
  *          schema:
  *              type: string
  *          description: The id of the blog
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successful response
@@ -202,6 +208,8 @@ export default(router: express.Router)=>{
  *          schema:
  *              type: string
  *          description: The id of the Comment to be deleted
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successful response
@@ -234,6 +242,8 @@ export default(router: express.Router)=>{
  *          schema:
  *              type: string
  *          description: The id of the Comment to be updated
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *      required: true
  *      content:

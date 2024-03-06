@@ -3,7 +3,7 @@ import {get, merge} from 'lodash'
 import { getUserById } from '../schema/users'
 
 import {getUserBySessionToken} from '../schema/users'
-
+ 
 export const isAuthenticated = async (req: express.Request, res: express.Response, next: express.NextFunction)=>{
     try{
         const sessionToken = req.cookies['USER-AUTH'];
@@ -132,13 +132,13 @@ export const isLoggedIn =  async (req: express.Request, res: express.Response, n
         const currentUserId = get(req, 'identity') ;
 
         if(!userInfo){
-            return res.status(403).send({message:"You don't have access to this resource beacuse no token"});
+            return res.status(403).send({message:"You don't have access to this resource"});
         }
         let userInfoId = JSON.parse(userInfo)._id
         const existingUser = await getUserById(userInfoId)
 
         if(!existingUser){
-            return res.status(403).send({message:"You don't have access to this resource", existingUser: existingUser, currentUserId: currentUserId});
+            return res.status(403).send({message:"You don't have access to this resource"});
         }
             next()
     }catch(error){

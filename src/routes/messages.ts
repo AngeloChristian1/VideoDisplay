@@ -1,12 +1,14 @@
 import express from 'express'
 
 import { getAllMessages, addMessage, deleteMessage, updateMessage, getOneMessageById } from '../controllers/messages'
+import { checkAdminship, isLoggedIn } from '../middlewares'
+import { extractToken } from '../middlewares/jwt_config'
 
 export default(router: express.Router)=>{
     router.post('/messages/add', addMessage)
-    router.get('/messages', getAllMessages)
+    router.get('/messages',extractToken, isLoggedIn, checkAdminship, getAllMessages)
     router.get('/messages/:id',getOneMessageById )  
-    router.delete('/messages/delete/:id',deleteMessage )
+    router.delete('/messages/delete/:id',extractToken, isLoggedIn, checkAdminship,deleteMessage )
     router.patch('/messages/update/:id',updateMessage )
 }
   
@@ -83,6 +85,8 @@ export default(router: express.Router)=>{
  *                type: string
  *              content:
  *                type: string
+ *    security:
+ *       - bearerAuth: []
  *    responses:
  *      200:
  *        description: You have successfully logged in
@@ -103,7 +107,7 @@ export default(router: express.Router)=>{
    *     summary: Get All Message
    *     tags: [Message]
    *     security:
-   *      -bearerAuth: []
+   *       - bearerAuth: []
    *     responses:
    *       200:
    *         description: Successful response
@@ -129,6 +133,8 @@ export default(router: express.Router)=>{
  *   get:
  *     summary: Get one Message
  *     tags: [Message]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *      -   in: path
  *          name: id
@@ -169,6 +175,8 @@ export default(router: express.Router)=>{
  *          schema:
  *              type: string
  *          description: The id of the Message to be deleted
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successful response
@@ -201,6 +209,8 @@ export default(router: express.Router)=>{
  *          schema:
  *              type: string
  *          description: The id of the Message to be updated
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *      required: true
  *      content:

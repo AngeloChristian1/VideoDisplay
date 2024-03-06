@@ -7,7 +7,6 @@ interface Person {
    
   interface Car {
     drive():void
-  }
   type example1 = Student extends Person ? number : string
   
   type example2 = Car extends Person ? number : string

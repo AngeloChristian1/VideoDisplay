@@ -7,6 +7,7 @@ const blogSchema = Joi.object({
     category: Joi.string().required(),
     content: Joi.string().required(),
     timeToRead: Joi.string(),
+    decoded:Joi.object(),
     // date: Joi.date().default(new Date()),
     // time: Joi.date().default(new Date().getTime()),
   });

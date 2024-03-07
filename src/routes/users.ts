@@ -64,6 +64,32 @@ export default(router: express.Router)=>{
  *         phone: '0788888888'
  *         password: 'user123'
  */
+  
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *      bearerAuth:
+ *         type: http
+ *         scheme: bearer
+ *         bearerFormat: JWT
+ *   schemas:
+ *     UserPassword:
+ *       type: object
+ *       required:
+ *         - oldPassword
+ *         - newPassword
+ *       properties:
+ *         oldPassword:
+ *           type: string
+ *           description: Old Password to change
+ *         newpassword:
+ *           type: string
+ *           description: newPassword to use  
+ *       example:
+ *         oldPassword: 'old123'
+ *         newPassword: 'new123'
+ */
 
 
 // API configs
@@ -190,6 +216,52 @@ export default(router: express.Router)=>{
  *           type: object
  *           properties:
  *              email:
+ *                type: string
+ * 
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Internal server error
+ *               error: Details about the error
+ */
+
+
+/** 
+ * @swagger 
+ * /users/changePassword/{id}:
+ *   patch:
+ *     summary: Change password of a user
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *      -   in: path
+ *          name: id
+ *          required: true
+ *          schema:
+ *              type: string
+ *          description: The id of the user 
+ *     requestBody:
+ *      required: true
+ *      content:
+ *       application/json:
+ *         schema:
+ *           type: object
+ *           properties:
+ *              oldPassword:
+ *                type: string
+ *              newPassword:
  *                type: string
  * 
  *     responses:

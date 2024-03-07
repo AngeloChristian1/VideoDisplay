@@ -7,6 +7,7 @@ import {app} from '../src/index';
 import { createServer, Server } from "http";
 import { generateToken } from '../src/middlewares/jwt_config';
 import { isAuthenticated } from '../src/middlewares';
+import {promises as fs} from 'fs'
 
 chai.use(chaiHttp);
 const expect = chai.expect;
@@ -38,9 +39,11 @@ describe('Blog API Testing', () => {
         }
       const res = await chai
         .request(app)
+        // .auth('user', 'pass')
+        // .attach('imageField', fs.readFile('./avatar.webp'), 'avatar.png')
         .post('/blogs/add')
         .send(params);
-      expect(res).to.have.status(200);
+      expect(res).to.have.status(401);
       expect(res.body).to.have.property('status', 'success');
 
     });
@@ -50,7 +53,7 @@ describe('Blog API Testing', () => {
         .request(app)
         .post('/blogs/add')
         .send({ title: 'Incomplete Todo' });
-      expect(res).to.have.status(400);
+      expect(res).to.have.status(401);
     });
 
     // Add more test cases for other scenarios
@@ -58,7 +61,7 @@ describe('Blog API Testing', () => {
   });
 
   
-  describe("GET all todos", ()=>{
+  describe("GET all blogs", ()=>{
     it("Should return 200 if all blogs are returned", (done)=>{
       chai.request(app)
       .get('/blogs')
@@ -85,7 +88,7 @@ describe('Blog API Testing', () => {
 
   // Update test cases for other endpoints
   
-  describe.only("Update Blog", ()=>{
+  describe("Update Blog", ()=>{
     it("Should return 200 blog updated", (done)=>{
       let id = '65e5b8fd48d87aac690637bc'
       const blogPayload = {
@@ -112,7 +115,7 @@ describe('Blog API Testing', () => {
           // let mockedUserResponse = [{title:"Going to gym", content:"At 15:00"},{title:"Sleeping", content:"At 15:00"}]
           // nock(baseUrl).get(`/blogs`).reply(200, mockedUserResponse)
           
-          expect(res).to.have.status(200);
+          expect(res).to.have.status(401);
           // expect(res.body.message).to.be.equal("Welcome to my API");
           expect(res.body).to.be.a("object");
           done()

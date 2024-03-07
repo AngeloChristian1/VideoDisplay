@@ -52,10 +52,12 @@ export const login = async (req: express.Request, res: express.Response)=>{
         const salt = random();
         user.authentication.sessionToken = authentication(salt, user._id.toString())
 
-        // await user.save();
+        await user.save();
+
+        const sentUser = await getUserByEmail(email)
 
         res.cookie("USER-AUTH",user.authentication.sessionToken, {domain: 'localhost'|| "my-brand", path:'/'} );
-        return res.status(200).send({message:"User Login Successful",status: "success",data:user, bearerToken: token ||"token"});
+        return res.status(200).send({message:"User Login Successful",status: "success",data:sentUser, tokens:{sessionToken: user.authentication.sessionToken, bearerToken:token} });
 
     }catch(error){
         console.log('error', error);

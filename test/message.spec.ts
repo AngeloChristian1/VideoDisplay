@@ -1,13 +1,13 @@
 import chai, { should } from 'chai';
 import chaiHttp from 'chai-http';
 import { describe, it } from 'mocha';
-import {app} from '../src/index'; // Replace this with the path to your Express app file
-import { MessageModel } from '../src/schema/message'; // Assuming you have a message model
+import { app } from './index.spec'; 
+import { MessageModel } from '../src/schema/message'; 
 
 chai.use(chaiHttp);
 const expect = chai.expect;
 
-describe.skip('Like', () => {
+describe('Like', () => {
 
   describe('POST /addmessage', () => {
     it('should add a new message', async () => {
@@ -26,7 +26,7 @@ describe.skip('Like', () => {
       const res = await chai
         .request(app)
         .post('/messages/add')
-        .send({ title: 'Incomplete message' });
+        .send({ message: 'Incomplete message' });
       expect(res).to.have.status(400);
       // Add more assertions as needed
     });

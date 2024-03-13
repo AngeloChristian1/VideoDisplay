@@ -5,6 +5,7 @@ import { getBlogById } from '../schema/blogs';
 
 export const addLike = async (req: express.Request, res: express.Response) =>{
     try{
+        console.log("body", req.body);
         const {userId, blogId, isLiked} = req.body;
 
         if(!userId || !blogId || isLiked == null){
@@ -33,13 +34,12 @@ export const addLike = async (req: express.Request, res: express.Response) =>{
                 return res.status(400).send({message:"Like deleted", length:isThisBlogLiked.length})
             }
         
- 
         const newLike = await createLike({userId, blogId, isLiked})
 
-        return res.status(200).send({Message:"Like Added", like : newLike})
+        return res.status(200).send({message:"Like Added", like : newLike})
     } catch(error){
         console.log('error', error);
-        return res.sendStatus(400);
+        return res.status(400).send({message:"Error", error:error});
     }
 }
 

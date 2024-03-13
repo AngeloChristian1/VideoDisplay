@@ -1,3 +1,4 @@
+// import { nodemailer } from 'nodemailer';
 import express from 'express';
 import http from 'http';
 import bodyParser from 'body-parser';
@@ -10,6 +11,8 @@ import {version} from "../package.json"
 import cookieParser from 'cookie-parser';
 import swaggerJSDoc from 'swagger-jsdoc';
 import multer from "multer"
+import nodemailer from "nodemailer"
+
 
 const upload = multer()
 export const  app = express();
@@ -82,23 +85,9 @@ app.get('/welcome', (req, res)=>{
   res.status(200).send({message:"Welcome to my API"})
 })
 
-    /**
-     * @swagger
-     * /welcome:
-     * get:
-     *  tag:
-     *      - HealthCheck
-     *       description: Responds if the app is up and running
-     *        responses:
-     *          200:
-     *          description: App is up and running
-     */
-    // swaggerDocs(app, port)
 app.use('/', router())
   server.listen(port, ()=>{
     console.log(`listening on port https://localhost:${port}`)
     // connectMongo();
     
 }) 
-
-

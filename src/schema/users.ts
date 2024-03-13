@@ -4,6 +4,7 @@ const UserSchema = new mongoose.Schema({
     name: {type: String, required:true},
     email: {type: String, required:true},
     phone: {type: String, required:true},
+    profile:{type:String, default: "https://res.cloudinary.com/dms2akwoq/image/upload/v1710319701/my-blog/tmcaaxd5lyemfsuxgbx2.png"},
     authentication:{
         password:{type: String, required:true, select:false},
         salt:{type: String, select:false},

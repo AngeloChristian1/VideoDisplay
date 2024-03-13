@@ -9,7 +9,7 @@ import { changeUserPassword } from '../controllers/authentication'
 export default(router: express.Router)=>{
     // router.get('/users',isAuthenticated, getAllUsers)
     router.get('/users',extractToken, isLoggedIn, checkAdminship, getAllUsers)
-    router.get('/users/:id',extractToken,isLoggedIn, getOneUserById)
+    router.get('/users/:id', getOneUserById)
     router.get('/users/token/:id',extractToken,isLoggedIn, getOneUserByToken)
     router.patch('/users/update/:id',extractToken,isLoggedIn, checkOwnership, updateUser)
     router.patch('/users/changePassword/:id', extractToken, isLoggedIn,checkOwnership, changeUserPassword)
@@ -272,7 +272,7 @@ export default(router: express.Router)=>{
  *             schema:
  *               type: object
  *               items:
- *                 $ref: '#/components/schemas/User'
+ *                 $ref: '#/components/schemas/UserPassword'
  *       400:
  *         description: Internal server error
  *         content:

@@ -1,12 +1,12 @@
 import chai, { should } from 'chai';
 import chaiHttp from 'chai-http';
 import { describe, it } from 'mocha';
-import {app} from '../src/index'; // Replace this with the path to your Express app file
+import { app } from './index.spec'; // Replace this with the path to your Express app file
 import { TodoModel } from 'schema/todos'; // Assuming you have a Todo model
 
 chai.use(chaiHttp);
 const expect = chai.expect;
-describe.skip("API Testing", ()=>{
+describe("API Testing", ()=>{
   should()
   // test welcome database
   it("Test Welcome API", (done)=>{
@@ -22,7 +22,7 @@ describe.skip("API Testing", ()=>{
 
   })
 })
-describe.skip('Like', () => {
+describe('Like', () => {
 
   describe('POST /addTodo', () => {
     it('should add a new todo', async () => {

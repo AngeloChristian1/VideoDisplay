@@ -52,8 +52,12 @@ export const getAllComments = async (req:express.Request, res:express.Response)=
 export const getCommentsByUserId = async (req:express.Request, res:express.Response)=>{
     try{
         const {id} = req.params;
-        const Comment =await getCommentByUserId(id);
-        return res.status(200).send({Comment:"Comment retrieved successfully",data:Comment})
+        let blogComments:any = []
+        const Comments =await getCommentByUserId(id);
+        Comments.map((comment , index)=>{
+            //  blogComments = getBlogById(toString(comment.blogId))
+        })
+        return res.status(200).send({Comment:"Comments by userId retrieved successfully",data:Comments, blogComments:blogComments})
     } 
     catch(error){
         console.log(error)

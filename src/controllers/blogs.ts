@@ -26,13 +26,12 @@ interface MulterRequest extends Request {
 export const uploadBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const body = req.body
-    // console.log("files",req.files)
+    console.log("my body",req.body)
     let { title,subtitle, category, content, timeToRead} = req.body;
+    const result = await blogSchema.validateAsync(req.body)
     if(!title || !content || !subtitle || !category || !content){
         return res.status(400).send({message:"Please fill in all fields"});
-    }
-    
-    const result = await blogSchema.validateAsync(req.body)
+    }    
     console.log("result", result);
     title  = result.title
     content = result.content
@@ -86,8 +85,14 @@ export const uploadBlog = async (req: Request, res: Response, next: NextFunction
       uploadStream.end(resizedBuffer);
     }
   } catch (error) {
-    console.error('Error in uploadToCloudinary middleware:', error);
-    next(error);
+    if(error.joi== true) {
+      error.status = 422
+      console.log(error.message)
+      return res.send({message:error.message})
+    }
+    console.error('Error in uploadToCloudinary middleware:', error?.details[0]);
+    // next(error);
+    return res.send({message:"error", error:error?.details[0]})
   }
 };
 
@@ -184,7 +189,7 @@ export const addBlog = async (req: MulterRequest, res: express.Response) =>{
 
     } catch(error){
         console.log('error', error);
-        return res.sendStatus(400);
+        return res.status(400).send({status:"error", error:error});
     }
 }
 
@@ -229,7 +234,8 @@ export const deleteBlog = async (req:express.Request, res:express.Response)=>{
         return res.send({message:"Blog deleted sussessfully", deletedBlog:deletedBlog})
     }catch(error){
         console.log(error)
-        return res.sendStatus(400);
+        return res.status(400).send({status:"error", error:error});
+
     }
 }
 
@@ -268,7 +274,7 @@ export const updateBlog = async (req:express.Request, res:express.Response)=>{
 
     }catch(error){
         console.log(error)
-        return res.status(400).send({message:"Blog update failed", bloggg:myBlog})
+        return res.status(400).send({message:"Blog update failed"})
     }
 }
 
@@ -343,9 +349,6 @@ export const editBlog = async (req: Request, res: Response, next: NextFunction) 
       uploadStream.end(resizedBuffer);
     }
     }
-
-    
-
 
   } catch (error) {
     console.error('Error in uploadToCloudinary middleware:', error);

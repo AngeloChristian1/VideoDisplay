@@ -7,18 +7,6 @@ export default (router: express.Router)=>{
     router.post('/auth/login', login)
 }
 
-/**
- * @swagger
- * '/welcome'
- *  get:
- *      summary:-API for testing server
- *      description: Welcome API
- *      response:
- *          200:
- *              description: To test get method
- * 
- */
- 
 
 /**
 * @swagger

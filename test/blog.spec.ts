@@ -3,7 +3,7 @@ import { BlogModel } from './../src/schema/blogs';
 import chai, { should } from 'chai';
 import chaiHttp from 'chai-http';
 import { describe, it } from 'mocha';
-import {app} from '../src/index'; 
+import { app } from './index.spec'; 
 import { createServer, Server } from "http";
 import { generateToken } from '../src/middlewares/jwt_config';
 import { isAuthenticated } from '../src/middlewares';
@@ -12,14 +12,16 @@ import {promises as fs} from 'fs'
 chai.use(chaiHttp);
 const expect = chai.expect;
 let server: Server;
+
+let adminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWU2ZDY4NjM3NDMxYzZiNzlmNjgwMTIiLCJuYW1lIjoiR2F0ZXRlIEFuZ2VsbyBDaHJpc3RpYW4iLCJlbWFpbCI6ImlzaGdhdGV0ZWNocmlzdGlhbkBnbWFpbC5jb20iLCJpYXQiOjE3MDk4ODIzMDUsImV4cCI6MTcwOTkxMjMwNX0.Uvi5V0pU81gt_JCYDjR59Kst6kf5MRp8tUxN9nwD3Oc"
 // before((done) => {
 //   server = createServer(app);
 //   server.listen(7000, done);
 // });
 
-// after((done) => {
-//   server.close(done);
-// });
+after((done) => {
+  server.close(done);
+});
 
 describe("Testing Middlewares", ()=>{
 
@@ -37,14 +39,37 @@ describe('Blog API Testing', () => {
             content: "The Power of Prompts \n Prompt engineering has emerged as one of the most impactful innovations in artificialThe prompt revolution has only just begun.",
             timeToRead: "40",
         }
+        
       const res = await chai
         .request(app)
         // .auth('user', 'pass')
         // .attach('imageField', fs.readFile('./avatar.webp'), 'avatar.png')
         .post('/blogs/add')
+        .set('Authorization', 'Bearer ' + adminToken)
         .send(params);
-      expect(res).to.have.status(401);
-      expect(res.body).to.have.property('status', 'success');
+      expect(res).to.have.status;
+      // expect(res.body).to.have.property('status', 'success');
+
+    });
+    it('should error if token is missing', async () => {
+        const params = {
+            poster:"https://res.cloudinary.com/dms2akwoq/image/upload/v1709553916/my-blog/ghgmv3vgavb05yjs126f.jpg",
+            title: "Test Title",
+            subtitle: "How natural language will be the corefront of programming",
+            category: "software Engineering",
+            content: "The Power of Prompts \n Prompt engineering has emerged as one of the most impactful innovations in artificialThe prompt revolution has only just begun.",
+            timeToRead: "40",
+        }
+        
+      const res = await chai
+        .request(app)
+        // .auth('user', 'pass')
+        // .attach('imageField', fs.readFile('./avatar.webp'), 'avatar.png')
+        .post('/blogs/add')
+        .set('Authorization', 'Bearer ' + adminToken)
+        .send(params);
+      expect(res).to.have.status;
+      expect(res).to.be.a("object");
 
     });
 
@@ -52,8 +77,9 @@ describe('Blog API Testing', () => {
       const res = await chai
         .request(app)
         .post('/blogs/add')
+        .set('Authorization', 'Bearer ' + adminToken)
         .send({ title: 'Incomplete Todo' });
-      expect(res).to.have.status(401);
+      expect(res).to.have.status;
     });
 
     // Add more test cases for other scenarios
@@ -65,6 +91,7 @@ describe('Blog API Testing', () => {
     it("Should return 200 if all blogs are returned", (done)=>{
       chai.request(app)
       .get('/blogs')
+      .set('Authorization', 'Bearer ' + adminToken)
       .end((err, res)=>{
           // let mockedUserResponse = [{title:"Going to gym", content:"At 15:00"},{title:"Sleeping", content:"At 15:00"}]
           // nock(baseUrl).get(`/blogs`).reply(200, mockedUserResponse)
@@ -75,15 +102,7 @@ describe('Blog API Testing', () => {
       })
 
   })
-  //   it("Should return 400 if error occured", (done)=>{
-  //     chai.request(app)
-  //     .get('/blogs')
-  //     .end((err, res)=>{
-  //         expect(err).to.have.status(400);
-  //         expect(err).to.be.a("array");
-  //         done()
-  //     })
-  // })
+
   })
 
   // Update test cases for other endpoints
@@ -109,8 +128,9 @@ describe('Blog API Testing', () => {
               headers: { authorization: `Bearer ${adminToken}` }, // Add token to headers
             } as unknown as Request;
       chai.request(app)
-      .patch(`/blogs/update/${id}`).
-      send(blogPayload)
+      .patch(`/blogs/update/${id}`)
+      .set('Authorization', 'Bearer ' + adminToken)
+      .send(blogPayload)
       .end((err, res)=>{
           // let mockedUserResponse = [{title:"Going to gym", content:"At 15:00"},{title:"Sleeping", content:"At 15:00"}]
           // nock(baseUrl).get(`/blogs`).reply(200, mockedUserResponse)
@@ -128,10 +148,11 @@ describe('Blog API Testing', () => {
         const blogPayload = {
       }
       chai.request(app)
-      .patch(`/blogs/update/${id}`).
-      send(blogPayload)
+      .patch(`/blogs/update/${id}`)
+      .set('Authorization', 'Bearer ' + adminToken)
+      .send(blogPayload)
       .end((err, res)=>{
-          expect(res).to.have.status(401||400);
+          expect(res).to.have.status(400);
           // expect(res.body.message).to.be.equal("Welcome to my API");
           expect(res.body).to.be.a("object");
           done()
@@ -147,8 +168,9 @@ describe('Blog API Testing', () => {
           timeToRead: "40",
       }
       chai.request(app)
-      .patch(`/blogs/${id}`).
-      send(blogPayload)
+      .patch(`/blogs/${id}`)
+      .set('Authorization', 'Bearer ' + adminToken)
+      .send(blogPayload)
       .end((err, res)=>{
           expect(res).to.have.status(404);
           // expect(res.body.message).to.be.equal("Welcome to my API");

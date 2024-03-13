@@ -6,7 +6,7 @@
 // import express from "express"
 // import { comparePassword, hashPassword } from '../src/helpers/hashPassword';
 
-// describe.skip('Middleware Tests', () => {
+// describe('Middleware Tests', () => {
 //   describe('generateToken', () => {
 //     it('should generate a valid JWT token', () => {
 //       const data = { _id: '123', name: 'testUser' ,email:"testEmail"};
@@ -16,7 +16,7 @@
 //     });
 //   });
 
-//   describe.skip('extractToken', () => {
+//   describe('extractToken', () => {
 //     it('should extract token from headers and set userInfo on request object', async () => {
 //       const testToken:string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWU4MmE0ZGE0ZmNkZGU1ZjVhNDI4MTIiLCJuYW1lIjoiUnVyZW1hIFBhdWwiLCJlbWFpbCI6InJ1cmVtYUBnbWFpbC5jb20iLCJpYXQiOjE3MDk3MTQwNDMsImV4cCI6MTcwOTc0NDA0M30.art-72bL-CBdLkyW8SYL_z_ngo8fcMiTTqXT1J4-J8U"
 //       const NAMESPACE = 'USER-AUTH'  

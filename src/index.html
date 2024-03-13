@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Upload image</h1>
-    <form method="POST" action="http://localhost:8080/blogs/upload" enctype="multipart/form-data">
+    <form method="POST" id="form" action="http://localhost:8080/blogs/upload" enctype="multipart/form-data">
         <input type="file" name="poster" placeholder="Choose file"><br><br>
         <input type="text" name="title" placeholder="Choose file"><br><br>
         <input type="text" name="subtitle" placeholder="Choose file"><br><br>
@@ -17,5 +17,31 @@
         <input type="submit">
 
     </form>
+    <script>
+const formElement = document.getElementById('form');  // Get the form element from
+const formData = new FormData(formElement)
+
+
+// formData.append("poster","hello")
+// formData.append("title","hello")
+// formData.append("category","hello")
+
+console.log("formdata",formData)
+for (let [key, value] of formData.entries()) {
+  console.log(key, value);
+}
+
+fetch('your-endpoint-url', {
+  method: 'POST',
+  body: formData
+})
+.then(response => response.json()) // Parse the JSON response
+.then(data => {
+  console.log(data); // Handle the response data
+})
+.catch(error => {
+  console.error('Error:', error); // Handle any errors
+});
+    </script>
 </body>
 </html>

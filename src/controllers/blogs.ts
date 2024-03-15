@@ -75,7 +75,7 @@ export const uploadBlog = async (req: Request, res: Response, next: NextFunction
             //All files processed now get your images here
             req.body.poster = cloudinaryUrls[0];
             const Blog:any =  createBlog({title,subtitle, category, content, timeToRead, poster:cloudinaryUrls[0]}).then(result => {
-                return res.status(200).send({status:"Blog Added successfully", data:result})
+                return res.status(200).send({status:"success", message:"Blog created successfully", data:result})
             })      
 
             // return res.status(200).send({files: cloudinaryUrls, body: body})  
@@ -88,7 +88,7 @@ export const uploadBlog = async (req: Request, res: Response, next: NextFunction
     if(error.joi== true) {
       error.status = 422
       console.log(error.message)
-      return res.send({message:error.message})
+      return res.send({message:error.message, status:"fail"})
     }
     console.error('Error in uploadToCloudinary middleware:', error?.details[0]);
     // next(error);
@@ -293,13 +293,13 @@ export const editBlog = async (req: Request, res: Response, next: NextFunction) 
     const existingBlog = await getBlogById(id)
 
     if(!existingBlog){
-        return res.status(404).send({message: "Blog not found"});
+        return res.status(404).send({message: "Blog not found", status:"fail"});
     }
     
     if(req.files){
           const files: CloudinaryFile[] = req.files as CloudinaryFile[];
     if (!files || files.length == 0 || files==null) {
-      return res.status(400).send({message: "Please provide Image"});
+      return res.status(400).send({message: "Please provide Image", status:"fail"});
     }
 
     const cloudinaryUrls: string[] = [];
@@ -342,7 +342,7 @@ export const editBlog = async (req: Request, res: Response, next: NextFunction) 
             //     return res.status(200).send({status:"Blog Added successfully", data:result})
             // })      
 
-            return res.status(200).send({message:"Blog updated", updatedBlog: existingBlog})  
+            return res.status(200).send({message:"Blog updated",status:"success", updatedBlog: existingBlog})  
           }
         }
       );

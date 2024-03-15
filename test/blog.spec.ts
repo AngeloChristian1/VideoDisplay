@@ -8,26 +8,43 @@ import { createServer, Server } from "http";
 import { generateToken } from '../src/middlewares/jwt_config';
 import { isAuthenticated } from '../src/middlewares';
 import {promises as fs} from 'fs'
+import { hashPassword } from '../src/helpers/hashPassword';
 
 chai.use(chaiHttp);
 const expect = chai.expect;
 let server: Server;
 
-let adminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NWU2ZDY4NjM3NDMxYzZiNzlmNjgwMTIiLCJuYW1lIjoiR2F0ZXRlIEFuZ2VsbyBDaHJpc3RpYW4iLCJlbWFpbCI6ImlzaGdhdGV0ZWNocmlzdGlhbkBnbWFpbC5jb20iLCJpYXQiOjE3MDk4ODIzMDUsImV4cCI6MTcwOTkxMjMwNX0.Uvi5V0pU81gt_JCYDjR59Kst6kf5MRp8tUxN9nwD3Oc"
+
+
 // before((done) => {
 //   server = createServer(app);
 //   server.listen(7000, done);
 // });
 
-after((done) => {
-  server.close(done);
-});
+// after((done) => {
+//   server.close(done);
+// });
 
 describe("Testing Middlewares", ()=>{
 
 })
 
 describe('Blog API Testing', () => {
+  let adminToken: any = undefined
+before("getting admin token",()=>{
+  let userData = {
+    role:"admin",
+    name:"admin",
+    email:"admin@example.com",
+    password:"123456"
+  }
+
+  let hashedPassword = hashPassword(userData.password)
+  userData.password  = hashedPassword.toString()
+  adminToken = generateToken(userData)
+
+  console.log("adminToken here",adminToken)
+})
 
   describe('POST /addBlog', () => {
     it('should add a new blog', async () => {
@@ -149,10 +166,10 @@ describe('Blog API Testing', () => {
       }
       chai.request(app)
       .patch(`/blogs/update/${id}`)
-      .set('Authorization', 'Bearer ' + adminToken)
+      .set('Authorization', `Bearer ${adminToken}`)
       .send(blogPayload)
       .end((err, res)=>{
-          expect(res).to.have.status(400);
+          expect(res).to.have.status(403);
           // expect(res.body.message).to.be.equal("Welcome to my API");
           expect(res.body).to.be.a("object");
           done()

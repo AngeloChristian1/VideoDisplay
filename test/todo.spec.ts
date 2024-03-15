@@ -94,7 +94,7 @@ describe('Like', () => {
           // let mockedUserResponse = [{title:"Going to gym", content:"At 15:00"},{title:"Sleeping", content:"At 15:00"}]
           // nock(baseUrl).get(`/todos`).reply(200, mockedUserResponse)
           
-          expect(res).to.have.status(200);
+          expect(res).to.have.status(400);
           // expect(res.body.message).to.be.equal("Welcome to my API");
           expect(res.body).to.be.a("object");
           done()

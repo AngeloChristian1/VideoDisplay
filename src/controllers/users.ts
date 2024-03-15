@@ -69,8 +69,7 @@ export const deleteUser = async (req:express.Request, res:express.Response)=>{
 export const updateUser = async (req:express.Request, res:express.Response)=>{
 
     try{
-        console.log("update my body:", req.body)
-        console.log("update my files", req.files)
+
         const {id} = req.params;
         const {name, phone, email} = req.body;
         const {role} = req.body;

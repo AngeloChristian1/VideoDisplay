@@ -9,7 +9,7 @@ declare global {
     interface Request {
       userInfo?: object|string;
     }
-  }
+  } 
 }
 
 export const generateToken = (data:object) => {

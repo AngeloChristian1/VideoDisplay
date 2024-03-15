@@ -4,10 +4,30 @@ import { Request, Response, NextFunction } from 'express';
 import * as blogsController from '../src/controllers/blogs'; // Import your controllers
 import { BlogModel } from '../src/schema/blogs';
 import chaiHttp from 'chai-http';
+import express from 'express';
+import { hashPassword } from '../src/helpers/hashPassword';
+import { generateToken } from '../src/middlewares/jwt_config';
 
 chai.use(chaiHttp);
 const expect = chai.expect;
 describe('Blog Controllers', () => {
+  let adminToken: any = undefined
+  before("getting admin token",()=>{
+    let userData = {
+      role:"admin",
+      name:"admin",
+      email:"admin@example.com",
+      password:"123456"
+    }
+  
+    let hashedPassword = hashPassword(userData.password)
+    userData.password  = hashedPassword.toString()
+    adminToken = generateToken(userData)
+  
+    console.log("adminToken here",adminToken)
+  })
+  
+  let next: express.NextFunction;
   describe('addBlog', () => {
     it('should add a new blog', async () => {
       let req = { body:
@@ -30,7 +50,7 @@ describe('Blog Controllers', () => {
 
       const saveStub = sinon.stub(BlogModel.prototype, 'save').resolves({ title: 'Test Blog', content: 'Test Content' });
 
-      await blogsController.addBlog((req as any), res);
+      await blogsController.uploadBlog((req as any), res, next);
 
       // expect(res).to.have.status(200);
       expect(req.body).to.be.a("object")

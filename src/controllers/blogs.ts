@@ -32,7 +32,7 @@ export const uploadBlog = async (req: Request, res: Response, next: NextFunction
     if(!title || !content || !subtitle || !category || !content){
         return res.status(400).send({message:"Please fill in all fields"});
     }    
-    console.log("result", result);
+    
     title  = result.title
     content = result.content
     subtitle = result.subtitle
@@ -135,13 +135,13 @@ export const uploadBlog = async (req: Request, res: Response, next: NextFunction
               result.end(image[0].buffer);
             // // const result = await cloudinary.uploader.upload({buffer: image[0].buffer})
             if(result){
-                console.log("result", result);
+                
                 return res.status(200).send({message:"Successfull", urls: cloudinary_url || "no url" ,result: result})
             }
 
         }catch(err){
             console.log(err)
-            console.log("image", image)
+            
             return res.status(400).send({message:"Image fail 1", error: err, image: image[0].buffer});
         }
        
@@ -171,12 +171,12 @@ export const addBlog = async (req: MulterRequest, res: express.Response) =>{
         }
 
         cloudinary.uploader.upload(picture).then(result=>{
-            console.log("cloudinary results",result)
+            
             return res.status(200).send({message: "image can go"})
             }) 
         // try{
         //     const result = await cloudinary.uploader.upload("assets/images/blog2.jpg")
-        //     console.log("result", result.secure_url);
+       
 
         // }catch(err){
         //     console.log("error adding image", err);
@@ -196,7 +196,7 @@ export const addBlog = async (req: MulterRequest, res: express.Response) =>{
  
 export const getAllBlogs = async (req:express.Request, res:express.Response)=>{
     try{
-      // console.log('getAllBlogs', req)
+      
         const Blogs =await getBlog();
         return res.status(200).json(Blogs)
     } 
@@ -284,7 +284,7 @@ export const editBlog = async (req: Request, res: Response, next: NextFunction) 
   try {
     const body = req.body
     const {id}= req.params
-    // console.log("files",req.files)
+   
     let { title,subtitle, category, content, timeToRead} = req.body;
     if(!title && !content && !subtitle && !category && !content){
         return res.status(400).send({message:"Please fill in all fields"});

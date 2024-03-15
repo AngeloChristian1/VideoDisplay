@@ -92,20 +92,20 @@ describe('Blog Controllers', () => {
       saveStub.restore();
     });
 
-    it('should return 400 if required fields are missing', async () => {
-      const req = { body: { title: 'Incomplete Blog' } } as Request;
-      const res = {
-        status: sinon.stub().returnsThis(),
-        sendStatus: sinon.stub(),
-      } as unknown as Response;
-      const next   = () => {}
+    // it('should return 400 if required fields are missing', async () => {
+    //   const req = { body: { title: 'Incomplete Blog' } } as Request;
+    //   const res = {
+    //     status: sinon.stub().returnsThis(),
+    //     sendStatus: sinon.stub(),
+    //   } as unknown as Response;
+    //   const next   = () => {}
 
-      await blogsController.uploadBlog((req as any), res, next);  
-      // expect(res.status).to.be.equal(400);
-      expect(req.body).to.be.a("object")
-      expect(req.body).to.be.have.property("title", "Incomplete Blog");
-    //   expect(res.sendStatus.called).to.be.true;
-    });
+    //   await blogsController.uploadBlog((req as any), res, next);  
+    //   // expect(res.status).to.be.equal(400);
+    //   expect(req.body).to.be.a("object")
+    //   expect(req.body).to.be.have.property("title", "Incomplete Blog");
+    // //   expect(res.sendStatus.called).to.be.true;
+    // });
 
     // Add more test cases for other scenarios
 

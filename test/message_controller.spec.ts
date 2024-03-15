@@ -123,7 +123,6 @@ describe('MessageController', () => {
 
       await getOneMessageById(req as express.Request, res as express.Response);
       let result = await getOneMessageById(req as express.Request, res as express.Response);
-      console.log("one message", result);
       // expect(res).to.be.a('function');
       // expect(res.status).to.be.a('function');
       expect(mockMessage).to.be.a("object")
@@ -238,19 +237,19 @@ describe('MessageController', () => {
 describe("core funtions", ()=>{
     describe("user cores", ()=>{
         it("should get user by email",async ()=>{
-            let userEmail = "ishgatetechristian@gmail.com"
+            let userEmail = "test@gmail.com"
             // let getUser = new getUserByEmail(userEmail)
             let result = await getUserByEmail(userEmail)
 
-            expect(result).to.have.property('email', 'ishgatetechristian@gmail.com')
+            expect(result).to.have.property('email', 'test@gmail.com')
             expect(result).to.be.a("object")
         })
         it("should get user by id",async ()=>{
-            let userId = "65e6d68637431c6b79f68012"
+            let userId = "65f20e01f24f5d11c7acb5c9"
             // let getUser = new getUserById(userId)
             let result =await getUserById(userId)
 
-            expect(result).to.have.property('email', 'ishgatetechristian@gmail.com')
+            expect(result).to.have.property('email', 'test@gmail.com')
             expect(result).to.be.a("object")
         })
         it("should create a user",async ()=>{
@@ -273,9 +272,9 @@ describe("core funtions", ()=>{
             expect(result).to.be.a("object")
         })
         it("should update a user",async ()=>{
-            let userId="65e10ffbacf60c30242a1aa8"
+            let userId="65f20e01f24f5d11c7acb5c9"
             let user = {
-                name:"test User Updated",
+                name:"test User",
                 email:"test@gmail.com",
                 phone:"0788888888",
 
@@ -283,24 +282,24 @@ describe("core funtions", ()=>{
             // let getUser = new getUserById(userId)
             let result =await updateUserById(userId,user)
             expect(result).to.have.property('email', 'test@gmail.com')
-            expect(result).to.have.property('name', 'test User Updated')
+            expect(result).to.have.property('name', 'test User')
             expect(result).to.be.a("object")
         })
     })
    
     describe("blog cores", ()=>{
         it("should get blog by title",async ()=>{
-            let blogTitle = "Swagger Title20"
+            let blogTitle = "Blog Title"
             // let getUser = new getUserByEmail(userEmail)
             let result = await getBlogByTitle(blogTitle)
-            expect(result).to.have.property('title', 'Swagger Title20')
+            expect(result).to.have.property('title', 'Blog Title')
             expect(result).to.be.a("object")
         })
         it("should get Blog by id",async ()=>{
-            let BlogId = "65e8cf19be02239b683d0b1f"
+            let BlogId = "65f20e02f24f5d11c7acb5ce"
             // let getBlog = new getBlogById(BlogId)
             let result =await getBlogById(BlogId)
-            expect(result).to.have.property('title', 'Swagger Title20')
+            expect(result).to.have.property('title', 'Blog Title Updated')
             expect(result).to.be.a("object")
         })
         it("should create a Blog",async ()=>{
@@ -319,7 +318,7 @@ describe("core funtions", ()=>{
             expect(result).to.be.a("object")
         })
         it("should update a blog",async ()=>{
-            let BlogId="65e1a3bdb2decd496eab9113"
+            let BlogId="65f20e02f24f5d11c7acb5ce"
             let Blog = {
 
                 poster:"https://res.cloudinary.com/dms2akwoq/image/upload/v1709756072/my-blog/pnqy8rc3imhvpxclmb12.png",
@@ -327,12 +326,12 @@ describe("core funtions", ()=>{
                 subtitle:"Blog subtitle",
                 category:"Blog category",
                 timeToRead:"Blog timeToRead",
-                content:"Blog Content Updated",
+                content:"Blog Content",
             }
             // let getBlog = new getBlogById(BlogId)
             let result =await updateBlogById(BlogId,Blog)
-            expect(result).to.have.property('title', 'Blog Title Updated'||'Blog Title')
-            expect(result).to.have.property('content', 'Blog Content Updated')
+            expect(result).to.have.property('title', 'Blog Title Updated')
+            expect(result).to.have.property('content', 'Blog Content')
             expect(result).to.be.a("object")
         })
     })

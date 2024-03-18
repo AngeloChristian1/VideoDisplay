@@ -14,7 +14,7 @@ declare global {
 
 export const generateToken = (data:object) => {
   let token = Jwt.sign(data, "USER-AUTH", {
-    expiresIn: 30000,
+    expiresIn: 300000,
   });
   // console.log("token generated", token);
   return token

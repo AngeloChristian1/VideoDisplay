@@ -129,8 +129,6 @@ export const isLoggedIn =  async (req: express.Request, res: express.Response, n
         
         const userInfo = JSON.stringify(req.userInfo)
         
-        const currentUserId = get(req, 'identity') ;
-
         if(!userInfo){
             return res.status(403).send({message:"You don't have access to this resource"});
         }

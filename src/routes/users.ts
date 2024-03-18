@@ -1,13 +1,14 @@
 import express from 'express'
 
 import {deleteUser, getAllUsers, getOneUserById, getOneUserByToken, updateUser} from "../controllers/users"
-import { isAuthenticated, isOwner, isAdmin, checkOwnership, checkAdminship, isLoggedIn } from '../middlewares'
+import { checkOwnership, checkAdminship, isLoggedIn } from '../middlewares'
 import { extractToken } from '../middlewares/jwt_config'
 import { changeUserPassword } from '../controllers/authentication'
 
 
 export default(router: express.Router)=>{
     // router.get('/users',isAuthenticated, getAllUsers)
+    router.get('/webhook')
     router.get('/users',extractToken, isLoggedIn, checkAdminship, getAllUsers)
     router.get('/users/:id', getOneUserById)
     router.get('/users/token/:id',extractToken,isLoggedIn, getOneUserByToken)

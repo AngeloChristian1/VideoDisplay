@@ -1,9 +1,13 @@
 node_modules
 .nole_modules
-./nole_modules 
+./nole_modules
 
 coverage
 ./coverage
 
 ./.nyc_output
 .nyc_output
+
+.env
+/.env
+./.env

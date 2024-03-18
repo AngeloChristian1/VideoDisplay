@@ -86,6 +86,7 @@ app.get('/welcome', (req, res)=>{
 })
 
 app.use('/', router())
+
   server.listen(port, ()=>{
     console.log(`listening on port https://localhost:${port}`)
     // connectMongo();
